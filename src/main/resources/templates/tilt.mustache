@@ -1,2 +1,21 @@
-<h3>I'm serving you the tilt page</h3>
-{{tilted}}
+
+{{>header}}
+
+<body>
+
+<h1>TILTED</h1>
+
+    <div id="inputForm">
+        <form id="input" action="/view" method="post">
+            <label for="requestedSummoner">Enter your NA Summoner Name:</label><br/>
+            <input type="search" size="16" name="requestedSummoner" value={{summonerName}}> <br/>
+            <input type="submit" name="submit" value="Look me up!">
+            {{#error}}
+            <div id="nameError"> Please input a valid summoner name on NA.</div>
+            {{/error}}
+        </form>
+    </div>
+
+ {{>footer}}
+
+</body>

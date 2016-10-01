@@ -1,0 +1,27 @@
+{{>header}}
+
+<body>
+
+<h1>TILTED</h1>
+
+<h2>We've performed a sophisticated search, and wanted to let you know that: <br/>
+<div id="summonerName">{{summonerName}}</div>
+<br/>
+is <br/>
+{{#tilted}}
+<div id="tilted">TILTED</div>
+{{/tilted}}
+{{^tilted}}
+<div id="notTilted">NOT TILTED</div>
+{{/tilted}}
+</h2>
+{{^tilted}}
+<div id="why">
+Why? Because they played {{games}} games with Twitch lately, and he is objectively the best champion.
+</div>
+{{/tilted}}
+<br/>
+<br/>
+
+{{>footer}}
+</body>

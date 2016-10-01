@@ -1,0 +1,56 @@
+#summonerName {
+    text-align: center;
+    font-size: 50px;
+    font-family: fantasy;
+}
+#tilted {
+    text-align: center;
+    color: red;
+    font-size: 40px;
+    font-family: sans-serif;
+}
+
+#notTilted {
+    text-align: center;
+    color: green;
+}
+
+#nameError {
+    text-align: center;
+    color: red;
+}
+
+#why {
+    text-align: center;
+    width: 50%;
+    font-family: sans-serif;
+    margin: 0 auto;
+}
+
+#inputForm {
+    text-align: center;
+    block: center;
+}
+
+h1 {
+    text-align: center;
+    font-size: 45px;
+    font-family: sans-serif;
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 30px;
+    font-family: sans-serif;
+    color: grey;
+    padding: 20px;
+}
+
+.footer {
+    text-align: center;
+    color: grey;
+    font-size: 10px;
+    width: 50%;
+    padding: 20px;
+}

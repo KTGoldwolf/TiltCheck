@@ -31,7 +31,7 @@ public class SummonerService {
         StringBuilder apirequest = new StringBuilder();
         apirequest.append("https://na.api.pvp.net/api/lol/")
                 .append(regionId)
-                .append("/v2.2")
+                .append("/v1.4")
                 .append("/summoner/by-name/")
                 .append(summonerName)
                 .append(config.getApiKey());
@@ -56,10 +56,8 @@ public class SummonerService {
 
     private Summoner mapSummoner(Map results){
         Summoner newSummoner = new Summoner();
-        newSummoner.setAccountId((Integer)results.get("accountId"));
-        newSummoner.setSummonerId((Integer)results.get("summonerId"));
-        newSummoner.setSummonerName((String)results.get("summonerName"));
-        newSummoner.setPlatformId((String)results.get("platformId"));
+        newSummoner.setSummonerId((Integer)results.get("id"));
+        newSummoner.setSummonerName((String)results.get("name"));
         newSummoner.setSummonerLevel((Integer)results.get("summonerLevel"));
         return newSummoner;
     }

@@ -42,4 +42,8 @@ public class MatchList {
     public void setEndIndex(int endIndex) {
         this.endIndex = endIndex;
     }
+
+    public int getMatchCount(){
+        return matches.size();
+    }
 }
