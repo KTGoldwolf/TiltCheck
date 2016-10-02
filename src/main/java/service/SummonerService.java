@@ -21,11 +21,16 @@ public class SummonerService extends BaseService{
         config = configuration;
     }
 
+
     /**
-     * Return a summoner object is the summoner exists
-     * Return null if they do not.
+     * Return a summoner if they exist.
      * @param summonerName
-     * @return
+     * @param regionId
+     * @return summoner
+     * @throws RateLimitException
+     * @throws ServiceUnavailableException
+     * @throws NoResultsException
+     * @throws IOException
      */
     public Summoner findSummoner(String summonerName, String regionId) throws RateLimitException,
             ServiceUnavailableException, NoResultsException, IOException{

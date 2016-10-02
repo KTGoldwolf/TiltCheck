@@ -13,6 +13,15 @@ import java.util.Map;
  */
 public class BaseService {
 
+    /**
+     * Execute given String as API call
+     * @param call fully formed URL for API call
+     * @return
+     * @throws RateLimitException
+     * @throws ServiceUnavailableException
+     * @throws IOException
+     * @throws NoResultsException
+     */
     public String getResponse(String call) throws RateLimitException, ServiceUnavailableException, IOException, NoResultsException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(call).build();

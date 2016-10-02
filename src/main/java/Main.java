@@ -19,15 +19,12 @@ public class Main {
     static SummonerService summonerService;
     static MatchService matchService;
 
-    /**
-     *
-     * @param args API Key
-     */
     public static void main(String[] args) {
         staticFileLocation("/public");
 
         String key = getHerokuSecret();
 
+        //If running  locally and not via heroku, provide API key via args
         if (key == null) {
             key = args[0];
         }
@@ -134,6 +131,6 @@ public class Main {
             return System.getenv().get("SECRET");
         }
         System.out.println("No Heroku secret found");
-        return null; //ir running locally, don't get a Heroku secret
+        return null; //if running locally, don't get a Heroku secret
     }
 }
