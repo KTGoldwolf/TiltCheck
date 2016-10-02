@@ -71,7 +71,7 @@ public class Main {
                         data.put("error", false);
                     }
             } catch (RateLimitException e) {
-                setSearchError(data, rawName, "Rate limit has been temporariily exceeded. Please wait a bit and then try again.");
+                setSearchError(data, rawName, "Rate limit has been temporarily exceeded. Please wait a bit and then try again.");
                 return new ModelAndView(data, "tilt.mustache");
             } catch (NoResultsException e) {
                 setSearchError(data, rawName, "No summoner was found with name" + rawName);
