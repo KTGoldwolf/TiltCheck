@@ -43,7 +43,7 @@ public class Main {
 
         port(getHerokuAssignedPort());
 
-        get("/tilt", (req, res) -> {
+        get("/", (req, res) -> {
             return new ModelAndView(map, "tilt.mustache");
         }, new MustacheTemplateEngine());
 
