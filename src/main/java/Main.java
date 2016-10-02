@@ -130,7 +130,7 @@ public class Main {
     static String getHerokuSecret() {
         ProcessBuilder processBuilder = new ProcessBuilder();
         if (processBuilder.environment().get("PORT") != null) {
-            return processBuilder.environment().get("SECRET");
+            return System.getenv().get("SECRET");
         }
         return null; //ir running locally, don't get a Heroku secret
     }
