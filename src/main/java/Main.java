@@ -28,10 +28,6 @@ public class Main {
 
         String key = getHerokuSecret();
 
-        if (key == null) {
-            key = args[0];
-        }
-
         config = new ConfigurationService(key);
         summonerService = new SummonerService(config);
         matchService = new MatchService(config);
