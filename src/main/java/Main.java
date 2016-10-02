@@ -28,6 +28,10 @@ public class Main {
 
         String key = getHerokuSecret();
 
+        if (key == null) {
+            key = args[0];
+        }
+
         config = new ConfigurationService(key);
         summonerService = new SummonerService(config);
         matchService = new MatchService(config);
@@ -126,8 +130,10 @@ public class Main {
     static String getHerokuSecret() {
         ProcessBuilder processBuilder = new ProcessBuilder();
         if (processBuilder.environment().get("PORT") != null) {
+            System.out.println("Reading secret from Heroku");
             return System.getenv().get("SECRET");
         }
+        System.out.println("No Heroku secret found");
         return null; //ir running locally, don't get a Heroku secret
     }
 }
