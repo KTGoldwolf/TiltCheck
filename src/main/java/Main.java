@@ -3,14 +3,11 @@ import dto.MatchList;
 import dto.Summoner;
 import org.eclipse.jetty.util.MultiMap;
 import org.eclipse.jetty.util.UrlEncoded;
-import service.ConfigurationService;
-import service.MatchService;
-import service.SummonerService;
+import service.*;
 import spark.ModelAndView;
 import spark.template.mustache.MustacheTemplateEngine;
 
-import java.net.URL;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,33 +36,7 @@ public class Main {
         summonerService = new SummonerService(config);
         matchService = new MatchService(config);
 
-
-
-//        Summoner summoner = summonerService.findSummoner(args[1], args[2]);
-//        MatchList matches = matchService.getMatchList(summoner.getSummonerId());
-//        ArrayList<Long> champions = new ArrayList<>();
-//
         Map map = new HashMap();
-//
-//        int twitchCount = 0;
-//
-//        for (Match match : matches.getMatches()){
-//            long championId = match.getChampion();
-//            if (championId == 29){
-//                twitchCount++;
-//            }
-//        }
-//
-//        if (twitchCount > 0){
-//            map.put("tilted", false);
-//            System.out.println(summoner.getSummonerName() + " is not tilted lately...");
-//            System.out.println("... because they played Twitch recently!");
-//            if (twitchCount > 1){
-//                System.out.println(twitchCount + " times in fact!");
-//            }
-//        } else{
-//            map.put("tilted", true);
-//        }
         int twitchCount = 0;
         map.put("tilted", true);
         map.put("twitchGames", twitchCount);
@@ -80,19 +51,16 @@ public class Main {
 
         post("/view", (req, res) -> {
             Map<String, Object> data = new HashMap<>();
+            MultiMap<String> params = new MultiMap<>();
+            UrlEncoded.decodeTo(req.body(), params, "UTF-8");
+            String rawName = params.get("requestedSummoner").toString().replace('[', ' ').replace(']', ' ');
+            String searchName = rawName.trim().toLowerCase();
             try {
-                MultiMap<String> params = new MultiMap<>();
-                UrlEncoded.decodeTo(req.body(), params, "UTF-8");
-                String searchName = params.get("requestedSummoner").toString().replace('[', ' ').replace(']', ' ').trim().toLowerCase();
-                if ( !searchName.matches("^[0-9\\p{L} _\\.]+$") ){
-                    setSearchError(data, searchName);
+                if ( !validateSummonerName(searchName)){
+                    setSearchError(data, rawName, "Please enter a valid summoner name.");
                     return new ModelAndView(data, "tilt.mustache");
-                } else {
+                }
                     Summoner summoner = summonerService.findSummoner(searchName, "NA");
-                    if ( summoner == null ) {
-                        setSearchError(data, searchName);
-                        return new ModelAndView(data, "tilt.mustache");
-                    }
                     data.put("summonerName", searchName);
                     int check = searchForTwitchGames(summoner);
                     if (check >= 1){
@@ -102,21 +70,41 @@ public class Main {
                         data.put("tilted", true);
                         data.put("error", false);
                     }
-                }
+            } catch (RateLimitException e) {
+                setSearchError(data, rawName, "Rate limit has been temporariily exceeded. Please wait a bit and then try again.");
+                return new ModelAndView(data, "tilt.mustache");
+            } catch (NoResultsException e) {
+                setSearchError(data, rawName, "No summoner was found with name" + rawName);
+                return new ModelAndView(data, "tilt.mustache");
+            } catch (ServiceUnavailableException e) {
+                setSearchError(data, rawName, "Unable to complete the search. Perhaps League is down for maintenance?");
+                return new ModelAndView(data, "tilt.mustache");
             } catch (Exception e) {
-                System.out.println(e);
+                setSearchError(data, rawName, "Some unknown error happened. ...Sorry.");
+                System.out.print("Unknown error " +e);
+                return new ModelAndView(data, "tilt.mustache");
             }
             return new ModelAndView(data, "view.mustache");
         }, new MustacheTemplateEngine());
 
     }
 
-    private static void setSearchError(Map data, String searchName){
-        data.put("error", true);
-        data.put("summonerName", searchName);
+    private static Boolean validateSummonerName(String input) {
+        if ( (!input.matches("^[0-9\\p{L} _\\.]+$")) || (input == null) ){
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    private static int searchForTwitchGames(Summoner summoner){
+    private static void setSearchError(Map data, String searchName, String errorText){
+        data.put("error", true);
+        data.put("summonerName", searchName);
+        data.put("errorText", errorText);
+    }
+
+    private static int searchForTwitchGames(Summoner summoner) throws NoResultsException, RateLimitException,
+            IOException, ServiceUnavailableException{
         int twitchCount = 0;
         MatchList matches = matchService.getMatchList(summoner.getSummonerId());
         if (matches.getMatchCount() == 0){
@@ -144,9 +132,6 @@ public class Main {
         if (processBuilder.environment().get("PORT") != null) {
             return processBuilder.environment().get("SECRET");
         }
-        return null;
+        return null; //ir running locally, don't get a Heroku secret
     }
-
-
-
 }

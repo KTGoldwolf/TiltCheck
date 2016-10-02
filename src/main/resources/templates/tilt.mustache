@@ -7,15 +7,50 @@
 
     <div id="inputForm">
         <form id="input" action="/view" method="post">
-            <label for="requestedSummoner">Enter your NA Summoner Name:</label><br/>
-            <input type="search" size="16" name="requestedSummoner" value={{summonerName}}> <br/>
-            <input type="submit" name="submit" value="Look me up!">
+          <table>
+            <tr>
+              <td>
+                <label for="requestedSummoner">Enter your NA Summoner Name:</label><br/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="search" size="16" name="requestedSummoner"
+                id="requestedSummoner" value={{summonerName}}> <br/>
+              </td>
+            </tr>
+            <tr>
+            <td>
+            <input type="submit" name="submit" id="lookup" value="Look me up!">
+            </td>
+          </tr>
+          <tr>
+            <td>
             {{#error}}
-            <div id="nameError"> Please input a valid summoner name on NA.</div>
+            <div id="error">{{errorText}}</div>
             {{/error}}
+          </td>
+        </tr>
+      </table>
         </form>
     </div>
 
- {{>footer}}
+    <div id="about">
+      <div id="aboutHeader">
+      <i class="fa fa-info-circle" aria-hidden="true" id="info"></i> What is <b>TILT CHECK</b>?
+      </div>
+      <div id="aboutContent">
+        <p> While playing League of Legends, we all get tilted sometimes. At the <b>INSTITUTE
+          OF TILT CHECK</b> our team of data scientists has been working hard to create an application
+          to allow you to realize what has been tilting you recently so that you can overcome your
+          personal barriers to optimum performance!
+        </p>
+        <p>
+          ...Okay, that may be a lie. This website is a personal project made for entertainment
+          purposes and will likely not improve your self-understanding, much less your MMR.
+      </div>
+    </div>
 
+ {{>footer}}
+<script src="/js/showHelp.js"></script>
 </body>

@@ -15,7 +15,7 @@
     color: green;
 }
 
-#nameError {
+#error {
     text-align: center;
     color: red;
 }
@@ -29,7 +29,40 @@
 
 #inputForm {
     text-align: center;
-    block: center;
+    width: 50%;
+    margin: 0 auto;
+}
+
+#input {
+    width: 50%;
+    margin: 0 auto;
+}
+
+#about {
+  width: 50%;
+  block: center;
+  margin: 0 auto;
+  border-radius: 25px;
+  padding: 10px;
+}
+
+#aboutHeader {
+  background-color: #d9d9d9;
+  border-radius: 10px 10px 0px 0px;
+  padding: 10px;
+}
+
+#aboutContent {
+  display: none;
+}
+
+#requestedSummoner {
+  font-size: 1.4em;
+}
+
+#lookup {
+  font-size: 1.4em;
+  width: 10.4em;
 }
 
 h1 {
@@ -53,4 +86,11 @@ h2 {
     font-size: 10px;
     width: 50%;
     padding: 20px;
+}
+
+table {
+  width: 100%;
+  border: 0px;
+  padding: 10px;
+  text-align: center;
 }

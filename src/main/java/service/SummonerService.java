@@ -7,13 +7,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by KTGoldwolf on 9/28/2016.
  */
-public class SummonerService {
+public class SummonerService extends BaseService{
     ConfigurationService config;
 
     public SummonerService(ConfigurationService configuration){
@@ -26,8 +27,8 @@ public class SummonerService {
      * @param summonerName
      * @return
      */
-    public Summoner findSummoner(String summonerName, String regionId){
-        OkHttpClient client = new OkHttpClient();
+    public Summoner findSummoner(String summonerName, String regionId) throws RateLimitException,
+            ServiceUnavailableException, NoResultsException, IOException{
         StringBuilder apirequest = new StringBuilder();
         apirequest.append("https://na.api.pvp.net/api/lol/")
                 .append(regionId)
@@ -35,23 +36,15 @@ public class SummonerService {
                 .append("/summoner/by-name/")
                 .append(summonerName)
                 .append(config.getApiKey());
-        Request request = new Request.Builder().url(apirequest.toString()).build();
-        Response response;
+        String response = getResponse(apirequest.toString());
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
         Map<String, Object> mymap;
-        Summoner summoner = new Summoner();
-        try {
-            response = client.newCall(request).execute();
-            String responseJSON = response.body().string();
-            mymap = mapper.readValue(responseJSON, HashMap.class);
-            Map<String, Object> results = (Map) mymap.get(summonerName);
-            summoner = mapSummoner(results);
-            return summoner;
-        } catch (Exception e){
-            System.out.println(e);
-            return null;
-        }
+        Summoner summoner;
+        mymap = mapper.readValue(response, HashMap.class);
+        Map<String, Object> results = (Map) mymap.get(summonerName);
+        summoner = mapSummoner(results);
+        return summoner;
     }
 
     private Summoner mapSummoner(Map results){
