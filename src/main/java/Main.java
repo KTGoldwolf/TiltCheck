@@ -22,9 +22,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-
-
-
         staticFileLocation("/public");
 
         String key = getHerokuSecret();
