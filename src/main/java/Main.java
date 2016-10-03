@@ -18,8 +18,13 @@ public class Main {
     static ConfigurationService config;
     static SummonerService summonerService;
     static MatchService matchService;
+    static StaticDataService staticDataService;
 
     public static void main(String[] args) {
+
+
+
+
         staticFileLocation("/public");
 
         String key = getHerokuSecret();
@@ -32,6 +37,7 @@ public class Main {
         config = new ConfigurationService(key);
         summonerService = new SummonerService(config);
         matchService = new MatchService(config);
+        staticDataService = new StaticDataService();
 
         Map map = new HashMap();
         int twitchCount = 0;
