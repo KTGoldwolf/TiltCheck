@@ -16,11 +16,25 @@ import java.util.Map;
  */
 public class SummonerService extends BaseService{
     ConfigurationService config;
+    CacheService cache;
 
     public SummonerService(ConfigurationService configuration){
         config = configuration;
+        cache = new CacheService();
     }
 
+    /**
+     * Ensure that a summoner name is of a valid format before accepting a search.
+     * @param input
+     * @return
+     */
+    public Boolean validateSummonerName(String input) {
+        if ( (!input.matches("^[0-9\\p{L} _\\.]+$")) || (input == null) ){
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     /**
      * Return a summoner if they exist.
@@ -34,6 +48,10 @@ public class SummonerService extends BaseService{
      */
     public Summoner findSummoner(String summonerName, String regionId) throws RateLimitException,
             ServiceUnavailableException, NoResultsException, IOException{
+        Summoner summoner = cache.getCachedSummoner(summonerName);
+        if (summoner != null){
+            return summoner;
+        }
         StringBuilder apirequest = new StringBuilder();
         apirequest.append("https://na.api.pvp.net/api/lol/")
                 .append(regionId)
@@ -45,10 +63,10 @@ public class SummonerService extends BaseService{
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
         Map<String, Object> mymap;
-        Summoner summoner;
         mymap = mapper.readValue(response, HashMap.class);
         Map<String, Object> results = (Map) mymap.get(summonerName);
         summoner = mapSummoner(results);
+        cache.cacheSummoner(summoner);
         return summoner;
     }
 

@@ -13,7 +13,7 @@ import java.util.Map;
 public class StaticDataService {
 
     private Map<Integer, String> champLookup;
-    Boolean dataLoaded;
+    Boolean dataLoaded = false;
     String lastRefreshVersion;
 
     public StaticDataService(){

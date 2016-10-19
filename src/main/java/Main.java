@@ -19,6 +19,7 @@ public class Main {
     static SummonerService summonerService;
     static MatchService matchService;
     static StaticDataService staticDataService;
+    static AnalysisService analysisService;
 
     public static void main(String[] args) {
 
@@ -35,6 +36,7 @@ public class Main {
         summonerService = new SummonerService(config);
         matchService = new MatchService(config);
         staticDataService = new StaticDataService();
+        analysisService = new AnalysisService(config);
 
         Map map = new HashMap();
         int twitchCount = 0;
@@ -53,16 +55,16 @@ public class Main {
             Map<String, Object> data = new HashMap<>();
             MultiMap<String> params = new MultiMap<>();
             UrlEncoded.decodeTo(req.body(), params, "UTF-8");
-            String rawName = params.get("requestedSummoner").toString().replace('[', ' ').replace(']', ' ');
+            String rawName = cleanSearchInput(params);
             String searchName = rawName.trim().toLowerCase();
             try {
-                if ( !validateSummonerName(searchName)){
+                if ( !summonerService.validateSummonerName(searchName) ){
                     setSearchError(data, rawName, "Please enter a valid summoner name.");
                     return new ModelAndView(data, "tilt.mustache");
                 }
                     Summoner summoner = summonerService.findSummoner(searchName, "NA");
                     data.put("summonerName", searchName);
-                    int check = searchForTwitchGames(summoner);
+                    int check = analysisService.analyzeGames(summoner);
                     if (check >= 1){
                         data.put("tilted", false);
                         data.put("games", check);
@@ -89,34 +91,14 @@ public class Main {
 
     }
 
-    private static Boolean validateSummonerName(String input) {
-        if ( (!input.matches("^[0-9\\p{L} _\\.]+$")) || (input == null) ){
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     private static void setSearchError(Map data, String searchName, String errorText){
         data.put("error", true);
         data.put("summonerName", searchName);
         data.put("errorText", errorText);
     }
 
-    private static int searchForTwitchGames(Summoner summoner) throws NoResultsException, RateLimitException,
-            IOException, ServiceUnavailableException{
-        int twitchCount = 0;
-        MatchList matches = matchService.getMatchList(summoner.getSummonerId());
-        if (matches.getMatchCount() == 0){
-            return  twitchCount;
-        }
-        for (Match match : matches.getMatches()){
-            long championId = match.getChampion();
-            if (championId == 29){
-                twitchCount++;
-            }
-        }
-        return twitchCount;
+    private static String cleanSearchInput(MultiMap<String> params){
+        return params.get("requestedSummoner").toString().replace('[', ' ').replace(']', ' ');
     }
 
     static int getHerokuAssignedPort() {
@@ -133,7 +115,7 @@ public class Main {
             System.out.println("Reading secret from Heroku");
             return System.getenv().get("SECRET");
         }
-        System.out.println("No Heroku secret found");
+        System.out.println("No Heroku secret found, running in local-only mode.");
         return null; //if running locally, don't get a Heroku secret
     }
 }
