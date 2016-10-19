@@ -1,26 +1,36 @@
 {{>header}}
 
-<body>
+  <div id="results">
+    <p>We have performed a sophisticated search, and have determined that:</p>
+    <h2>{{summonerName}}</h2>
+      <div id="why">
+        <p>is</p>
+      </div>
+    {{#tilted}}
+      <div id="tilted">TILTED</div>
+    {{/tilted}}
+    {{^tilted}}
+      <div id="notTilted">NOT TILTED</div>
+    {{/tilted}}
+  </div>
 
-<h1>TILTED</h1>
+  <div id="why">
+    {{#tilted}}
+      <p>Fortunately, there is a solution for people in this position:</p>
+      <div id="tilted">PLAY MORE TWITCH</div>
+    <center>
+        <img class="championImage" src="/images/twitch.png">
+    </center>
+      <p>Twitch is objectively the best champion.</p>
+      <p>He is the only stealth champion in the game that is also a rat.</p>
+      <p>He has a great time while fighting, and you will too!</p>
+      <div id="tilted">PLAY MORE TWITCH</div>
+    {{/tilted}}
 
-<h2>We've performed a sophisticated search, and wanted to let you know that: <br/>
-<div id="summonerName">{{summonerName}}</div>
-is <br/>
-{{#tilted}}
-<div id="tilted">TILTED</div>
-{{/tilted}}
-{{^tilted}}
-<div id="notTilted">NOT TILTED</div>
-{{/tilted}}
-</h2>
-{{^tilted}}
-<div id="why">
-Why? Because they played {{games}} games with Twitch lately, and he is objectively the best champion.
-</div>
-{{/tilted}}
-<br/>
-<br/>
-
+    {{^tilted}}
+      <p>...Why? Because they played {{games}} games with Twitch lately, and he is
+      objectively the best champion. No one who has played Twitch can be tilted.</p>
+    {{/tilted}}
+  </div>
 {{>footer}}
 </body>
